@@ -57,8 +57,7 @@ class Grid():
         """
         Checks is the current state of the grid is sorte and returns the answer as a boolean.
         """
-        # TODO: implement this function (and remove the line "raise NotImplementedError").
-        raise NotImplementedError
+        return self.state == [list(range(i*self.n+1, (i+1)*self.n+1)) for i in range(self.m)]
 
     def swap(self, cell1, cell2):
         """
@@ -87,7 +86,7 @@ class Grid():
             So the format should be [((i1, j1), (i2, j2)), ((i1', j1'), (i2', j2')), ...].
         """
         for swap in cell_pair_list :
-            
+            self.swap(swap[0],swap[1])
 
     @classmethod
     def grid_from_file(cls, file_name): 
