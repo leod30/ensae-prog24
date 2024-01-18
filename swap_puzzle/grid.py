@@ -87,6 +87,7 @@ class Grid():
         """
         for swap in cell_pair_list :
             self.swap(swap[0],swap[1])
+            print(self)
 
     @classmethod
     def grid_from_file(cls, file_name): 
