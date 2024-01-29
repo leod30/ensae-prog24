@@ -1,3 +1,6 @@
+import numpy as np
+import tkinter as tk
+
 """
 This is the grid module. It contains the Grid class and its associated methods.
 """
@@ -18,7 +21,7 @@ class Grid():
         The state of the grid, a list of list such that state[i][j] is the number in the cell (i, j), i.e., in the i-th line and j-th column. 
         Note: lines are numbered 0..m and columns are numbered 0..n.
     """
-    
+
     def __init__(self, m, n, initial_state = []):
         """
         Initializes the grid.
@@ -37,6 +40,9 @@ class Grid():
         if not initial_state:
             initial_state = [list(range(i*n+1, (i+1)*n+1)) for i in range(m)]            
         self.state = initial_state
+
+        self.window = tk.Tk()   #create the window for the representation
+        self.canv = tk.Canvas(self.window, bg="white", height=600, width=600)   #create the canvas area to represent the grid
 
     def __str__(self): 
         """
@@ -93,7 +99,7 @@ class Grid():
     def grid_from_file(cls, file_name): 
         """
         Creates a grid object from class Grid, initialized with the information from the file file_name.
-        
+
         Parameters: 
         -----------
         file_name: str
@@ -118,3 +124,33 @@ class Grid():
         return grid
 
 
+    def grid_representation(self):
+        self.window.title("GRID")
+        self.canv.pack()
+        self.canv.create_text(300,
+                        50,
+                        fill="black",
+                        font="Comic 25 italic bold",
+                        text="GRID REPRESENTATION")
+        self.canv.create_text(300,
+                        550,
+                        fill="black",
+                        font="Comic 30 bold",
+                        text=f"Nb coups : X")
+        for i in range(self.m):
+            for j in range(self.n):
+                self.canv.create_rectangle(600 * (j + 2)/(self.n+4),
+                                    600 * (i + 2)/(self.m+4),
+                                    600 * (j + 3)/(self.n+4),
+                                    600 * (i + 3)/(self.m+4),
+                                    outline="#baaca2",
+                                    width=10)
+                self.canv.create_text(600 * (j + 5/2)/(self.n+4),
+                                      600 * (i + 5/2)/(self.m+4),
+                                fill=f"black",
+                                font=f"Comic {int(100/max(self.m,self.n))} bold",
+                                text=f"{int(self.state[i][j])}")
+        self.window.mainloop()
+
+G = Grid(6,6)
+G.grid_representation()
