@@ -125,6 +125,10 @@ class Grid():
 
 
     def grid_representation(self):
+        """
+        Creates a grid representation with tkinter : works with another compiler but it seems like there isn't an .
+        """
+        
         self.window.title("GRID")
         self.canv.pack()
         self.canv.create_text(300,
@@ -151,6 +155,3 @@ class Grid():
                                 font=f"Comic {int(100/max(self.m,self.n))} bold",
                                 text=f"{int(self.state[i][j])}")
         self.window.mainloop()
-
-G = Grid(6,6)
-G.grid_representation()
