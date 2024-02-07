@@ -5,6 +5,8 @@ import tkinter as tk
 This is the grid module. It contains the Grid class and its associated methods.
 """
 
+
+
 import random
 
 class Grid():
@@ -43,7 +45,6 @@ class Grid():
 
         self.window = tk.Tk()   #create the window for the representation
         self.canv = tk.Canvas(self.window, bg="white", height=600, width=600)   #create the canvas area to represent the grid
-
     def __str__(self): 
         """
         Prints the state of the grid as text.
@@ -155,3 +156,6 @@ class Grid():
                                 font=f"Comic {int(100/max(self.m,self.n))} bold",
                                 text=f"{int(self.state[i][j])}")
         self.window.mainloop()
+
+G = Grid(2,3)
+print(G)

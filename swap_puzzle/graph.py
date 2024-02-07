@@ -81,6 +81,43 @@ class Graph:
         self.nb_edges += 1
         self.edges.append((node1, node2))
 
+    #Our first bfs is the following, it stopped when it reached the dst cell, but we understood later with the question 8 that it must not, so our real bfs is after this function
+    """def bfs(self, src, dst): 
+        
+        Finds a shortest path from src to dst by BFS.  
+
+        Parameters: 
+        -----------
+        src: NodeType
+            The source node.
+        dst: NodeType
+            The destination node.
+
+        Output: 
+        -------
+        path: list[NodeType] | None
+            The shortest path from src to dst. Returns None if dst is not reachable from src
+        
+        queue = [src]
+        marked = [src]
+        prev = [None for i in range(self.nb_nodes)] #list of the parents, in the same order as the nodes
+        while len(queue) != 0 and dst not in queue :
+            current = queue.pop(0)
+            for neighbor in self.graph[current]:
+                if neighbor not in marked:
+                    queue.append(neighbor)
+                    marked.append(neighbor)
+                    prev[neighbor-1]=current
+        if prev[dst-1] != None: #case where dst is reachable from src
+            path=[dst]
+            while src not in path:
+                path.append(prev[path[-1]-1])
+            path.reverse()
+        else: #case where dst is not reachable from src
+            path = None
+        return path"""
+
+    
     def bfs(self, src, dst): 
         """
         Finds a shortest path from src to dst by BFS.  
@@ -100,7 +137,7 @@ class Graph:
         queue = [src]
         marked = [src]
         prev = [None for i in range(self.nb_nodes)] #list of the parents, in the same order as the nodes
-        while len(queue) != 0 and dst not in queue :
+        while len(queue) != 0 :
             current = queue.pop(0)
             for neighbor in self.graph[current]:
                 if neighbor not in marked:
@@ -115,6 +152,7 @@ class Graph:
         else: #case where dst is not reachable from src
             path = None
         return path
+
 
     @classmethod
     def graph_from_file(cls, file_name):
@@ -151,9 +189,9 @@ class Graph:
 
 def test_graph(graph_number):
     """this function gets the graph in graph.in and tests if the bfs function works with the graph.path.out, by testing bfs(src,dst) (with src and dst the first 2 numbers of each line in graph1.in) and then compares it to the list at the end of the line"""
-    G = Graph.graph_from_file(f"ensae-prog24-1/input/graph"+str(graph_number)+".in")
+    G = Graph.graph_from_file(f"/home/onyxia/work/ensae-prog24/input/graph"+str(graph_number)+".in")
     # Open the file in read mode
-    with open(f"ensae-prog24-1/input/graph"+str(graph_number)+".path.out", "r") as file:
+    with open(f"/home/onyxia/work/ensae-prog24/input/graph"+str(graph_number)+".path.out", "r") as file:
         tuple_list = []  # list with tuples of integers, representing the first 2 numbers of each line in the file graph1.path.out
         list_list = []  # list with lists of integers, representing the path in each line in the file graph1.path.out
         
