@@ -1,5 +1,7 @@
 import numpy as np
 import tkinter as tk
+from math import factorial
+from graph import Graph
 
 """
 This is the grid module. It contains the Grid class and its associated methods.
@@ -43,8 +45,8 @@ class Grid():
             initial_state = [list(range(i*n+1, (i+1)*n+1)) for i in range(m)]            
         self.state = initial_state
 
-        self.window = tk.Tk()   #create the window for the representation
-        self.canv = tk.Canvas(self.window, bg="white", height=600, width=600)   #create the canvas area to represent the grid
+        """self.window = tk.Tk()   #create the window for the representation
+        self.canv = tk.Canvas(self.window, bg="white", height=600, width=600)"""     #create the canvas area to represent the grid
     def __str__(self): 
         """
         Prints the state of the grid as text.
@@ -94,7 +96,6 @@ class Grid():
         """
         for swap in cell_pair_list :
             self.swap(swap[0],swap[1])
-            print(self)
 
     @classmethod
     def grid_from_file(cls, file_name): 
@@ -129,7 +130,7 @@ class Grid():
         """
         Creates a grid representation with tkinter : works with another compiler but it seems like there isn't an .
         """
-        
+
         self.window.title("GRID")
         self.canv.pack()
         self.canv.create_text(300,
@@ -152,10 +153,102 @@ class Grid():
                                     width=10)
                 self.canv.create_text(600 * (j + 5/2)/(self.n+4),
                                       600 * (i + 5/2)/(self.m+4),
-                                fill=f"black",
-                                font=f"Comic {int(100/max(self.m,self.n))} bold",
-                                text=f"{int(self.state[i][j])}")
+                                      fill="black",
+                                      font=f"Comic {int(100/max(self.m,self.n))} bold",
+                                      text=f"{int(self.state[i][j])}")
         self.window.mainloop()
 
-G = Grid(2,3)
-print(G)
+    def __hash__(self):
+        #Question 6
+        """The idea is this:
+We replace the list of lists with a list with all the coefficients and we will assign a number which will be the
+hash by numbering these lists coefficient by coefficient in ascending order. Then we notice, to avoid having to
+store the list of all possible grids, that the (mn-1)! first lists start with 1, then (mn-1)! following by 2 etc.
+Then for the 2nd digit, when we have located the slice corresponding to the first digit, we notice that the
+(mn-2)! first numbers in this range start with the first digit not placed in the list in ascending order, etc.
+This method produces a unique result
+
+        Returns:
+            S: int
+                A unique integer representing the grid, that is between 0 and (mn-1)!
+        """
+        list = []
+        for i in range(self.m): #We transform the grid into a list
+            for j in range(self.n):
+                list.append(self.state[i][j])
+
+        T = [False for i in range(self.m*self.n+1)] #List whe T[i] indicates if whether or not i has been assigned
+        S = 0   #The hash number that we are going to create
+        for i in range(1, self.m*self.n+1): #We procede cell by cell
+            x = list[i-1]   #We recreate the coefficient multiplied by (mn-i) in the hash, that is (x-1-d) : x-1 because we know that the first (mn-1)! starts by 1 (so it starts by (mn-1)!*0=(mn-1)!*(1-1)). Finally, we remove d, with d the number of numbers < x
+            d = 0
+            for j in range(1, x):
+                if T[j]:
+                    d += 1
+            T[x] = True
+            S += (x-1-d)*factorial(self.m*self.n-i)
+        return S+1
+
+    def dehash(self, hash):
+        #Question 6
+        """
+        Same commentary as hash, but in the other direction
+
+        Args:
+            hash (int): the integer representing a grid, that we will decode into a list
+
+        Returns:
+            grid (list) : the list mentioned above
+        """
+        hash-=1
+        list = []
+        visited=[False for i in range(self.n*self.m)]
+        for k in range(self.n*self.m-1):
+            r, d = hash%factorial(self.m*self.n-k-1), hash//factorial(self.n*self.m-k-1)
+            x = 1
+            while (d+1+len([i for i in visited[:x-1] if i]))!=x or visited[x-1] == True:
+                x+=1
+            list.append(x)
+            visited[x-1]=True
+            hash=r
+        
+        #We add the last coefficient
+        for k in range(1,self.n*self.m+1):
+            if k not in list:
+                list.append(k)
+        
+        #We convert our list into a grid.state
+        grid = [[None for j in range(self.n)] for i in range(self.m)]
+
+        for i in range(self.m):
+          for j in range(self.n):
+            grid[i][j]=list.pop(0)
+        return grid
+    
+
+    def create_graph(self):
+        #Question 7 part 1
+        """Creates the graph corresponding to the situation, first, it adds all the nodes, ie all the possible grids
+            then it creates the edges by doing all the possible swaps on the grids, and adding their hash to the list
+            of the neighbors of the node
+
+        Returns:
+            dict: the graph, represented by its adjacency list
+        """
+        graph = Graph(nodes=[i for i in range(1, factorial(self.m*self.n)+1)])
+        for node in range(1, factorial(self.m*self.n)+1):
+            for i in range(self.m):
+                for j in range(self.n):
+                  if i+1 < self.m:  # We do all the possible moves, if they dont go outside the dimensions of the grid
+                    G = Grid(self.m, self.n, self.dehash(node))
+                    G.swap((i,j),(i+1,j))
+                    graph.add_edge(node, hash(G))
+
+                  if j+1 < self.n:  # We do all the possible moves, if they dont go outside the dimensions of the grid
+                    G = Grid(self.m, self.n, self.dehash(node))
+                    G.swap((i,j),(i,j+1))
+                    graph.add_edge(node, hash(G))
+
+        return graph
+
+

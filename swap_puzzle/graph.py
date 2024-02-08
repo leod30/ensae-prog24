@@ -67,19 +67,20 @@ class Graph:
         node2: NodeType
             Second end (node) of the edge
         """
-        if node1 not in self.graph:
-            self.graph[node1] = []
-            self.nb_nodes += 1
-            self.nodes.append(node1)
-        if node2 not in self.graph:
-            self.graph[node2] = []
-            self.nb_nodes += 1
-            self.nodes.append(node2)
+        if node1 not in self.graph[node2]:
+            if node1 not in self.graph:
+                self.graph[node1] = []
+                self.nb_nodes += 1
+                self.nodes.append(node1)
+            if node2 not in self.graph:
+                self.graph[node2] = []
+                self.nb_nodes += 1
+                self.nodes.append(node2)
 
-        self.graph[node1].append(node2)
-        self.graph[node2].append(node1)
-        self.nb_edges += 1
-        self.edges.append((node1, node2))
+            self.graph[node1].append(node2)
+            self.graph[node2].append(node1)
+            self.nb_edges += 1
+            self.edges.append((node1, node2))
 
     #Our first bfs is the following, it stopped when it reached the dst cell, but we understood later with the question 8 that it must not, so our real bfs is after this function
     """def bfs(self, src, dst): 
@@ -117,7 +118,6 @@ class Graph:
             path = None
         return path"""
 
-    
     def bfs(self, src, dst): 
         """
         Finds a shortest path from src to dst by BFS.  
@@ -136,23 +136,22 @@ class Graph:
         """ 
         queue = [src]
         marked = [src]
-        prev = [None for i in range(self.nb_nodes)] #list of the parents, in the same order as the nodes
-        while len(queue) != 0 :
+        prev = [None for i in range(self.nb_nodes)]  # list of the parents, same order as the nodes
+        while len(queue) != 0:
             current = queue.pop(0)
             for neighbor in self.graph[current]:
                 if neighbor not in marked:
                     queue.append(neighbor)
                     marked.append(neighbor)
-                    prev[neighbor-1]=current
-        if prev[dst-1] != None: #case where dst is reachable from src
-            path=[dst]
+                    prev[neighbor-1] = current
+        if prev[dst-1] is not None:  # case where dst is reachable from src
+            path = [dst]
             while src not in path:
                 path.append(prev[path[-1]-1])
             path.reverse()
-        else: #case where dst is not reachable from src
+        else:  # case where dst is not reachable from src
             path = None
         return path
-
 
     @classmethod
     def graph_from_file(cls, file_name):
@@ -181,7 +180,7 @@ class Graph:
                 edge = list(map(int, file.readline().split()))
                 if len(edge) == 2:
                     node1, node2 = edge
-                    graph.add_edge(node1, node2) # will add dist=1 by default
+                    graph.add_edge(node1, node2)  # will add dist=1 by default
                 else:
                     raise Exception("Format incorrect")
         return graph
@@ -201,10 +200,10 @@ def test_graph(graph_number):
             if elements[-1] == "None\n":
                 elements[-1] = "None"
             else:
-                last_number = (elements.pop())[:-2] #at the end of each line, is a "\n" in order to return to a new line in the file, so we extract the number
+                last_number = (elements.pop())[:-2]  # at the end of each line, is a "\n" in order to return to a new line in the file, so we extract the number
                 elements.append(last_number)
-                elements.append("]") #puts back the "]"
-                num3 = eval(elements.pop(2)) #case where there is 3 numbers and 1 list
+                elements.append("]")  # puts back the "]"
+                num3 = eval(elements.pop(2))  # case where there is 3 numbers and 1 list
             
             # Convertir les trois premiers éléments en nombres entiers
             num1 = eval(elements.pop(0))

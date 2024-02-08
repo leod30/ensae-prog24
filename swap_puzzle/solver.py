@@ -1,4 +1,6 @@
 from grid import Grid
+from main import get_swap
+from graph import Graph
 
 class Solver(): 
     """
@@ -32,7 +34,6 @@ class Solver():
         start, finish: tuple[int]
             coordinates of the start and finish cells
         """
-        print(start, finish)
         i1, j1, i2, j2 = start[0], start[1], finish[0], finish[1]
         swaps_lr = [((i1, j1-((j1-j2>0)-(j1-j2<0))*k),(i1, j1 - ((j1-j2>0)-(j1-j2<0))*(k+1))) for k in range (abs(j1-j2))]
         swaps_up = [((i1-k, j2),(i1-k-1, j2)) for k in range (i1-i2)]
@@ -60,7 +61,6 @@ class Solver():
         number = 1
         for i in range(m):
             for j in range(n):
-                print(grid)
                 i1, j1 = self.get_coord(number, grid)
                 sequence = self.get_seq((i1, j1), (i, j))
                 grid.swap_seq(sequence)
@@ -68,18 +68,19 @@ class Solver():
                 for swap in sequence:
                     solution.append(swap)
                 number += 1
-        print(grid)
         return (solution, len(solution))
 
-    def get_solution(self):
+    def get_solution(self, grid):
+        # Question 7 part 2 with the bfs and all the graph created
         """
         Solves the grid and returns the sequence of swaps at the format 
         [((i1, j1), (i2, j2)), ((i1', j1'), (i2', j2')), ...]. 
         """
-        # TODO: implement this function (and remove the line "raise NotImplementedError").
-        # NOTE: you can add other methods and subclasses as much as necessary. The only thing imposed is the format of the solution returned.
-        raise NotImplementedError
-
-solver=Solver()
-grid = Grid(2, 3, [[5, 3, 6], [2, 1, 4]])
-solver.naive_solver(grid)
+        graph = grid.create_graph()     # We get the graph corresponding
+        if (hash(grid)) == 1:
+            return "Already solved"
+        path = graph.bfs(hash(grid), 1)      # we get the path and the len of it by bfs
+        # Then, we need to obtain which swap gives us the transformation from one grid to another
+        # We implemented this function as get_swap in the grid.py file
+        path = [get_swap(grid.dehash(path[i]),grid.dehash(path[i+1])) for i in range(len(path)-1)]
+        return path
