@@ -72,9 +72,12 @@ print(test_graph(2))"""
 # hash and dehash are O((mn)!) (even less but it doesn't change anything)
 # create_graph is O((mn)!*mn), so the overall function is O((mn)*mn)
 """grid = Grid(2, 3, [[5, 3, 6], [2, 1, 4]])
-solver.better_get_solution(grid)"""   #The solution is the same length here, but in general its length is <= to the naive one and is optimal
+print(solver.get_solution(grid))"""   #The solution is the same length here, but in general its length is <= to the naive one and is optimal
 
-# Question 8 : we implemented the better_bfs function that stops the bfs when the goal node is reached
-# Then, we use the get solve but with the better_bfs, its complexity is slightly better
+# Question 8 : here, we are only going to create the part of the graph that we need, to do it, as we 
+# use the bfs, we create the corresponding nodes and edges
 """grid = Grid(2, 3, [[5, 3, 6], [2, 1, 4]])
 solver.better_get_solution(grid)"""
+# Thus, we conclude that this method is overall more efficient, we can even do it for slightly
+# bigger grids in a reasonable amount of time which was impossible with the previous method
+# but its complexity depends on the case, and it can be as complex as the previous ones in the worst cases

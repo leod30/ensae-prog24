@@ -1,6 +1,7 @@
 from grid import Grid
 from grid import get_swap
 from graph import Graph
+from math import factorial
 
 class Solver(): 
     """
@@ -71,7 +72,7 @@ class Solver():
         return (solution, len(solution))
 
     def get_solution(self, grid):
-        # Question 7 part 2 with the bfs and all the graph traveled
+        # Question 7 part 2 with the bfs and all the graph created
         """
         Solves the grid and returns the sequence of swaps at the format 
         [((i1, j1), (i2, j2)), ((i1', j1'), (i2', j2')), ...]. 
@@ -86,15 +87,49 @@ class Solver():
         return path
     
     def better_get_solution(self, grid):
-        # Question 8 with the better_bfs
+        # Question 8 with the creation of the part needed of the graph
         """
         Solves the grid and returns the sequence of swaps at the format 
         [((i1, j1), (i2, j2)), ((i1', j1'), (i2', j2')), ...]. 
         """
-        graph = grid.create_graph()     # We get the graph corresponding
+        # We do the bfs directly here, but we create the nodes and edges when needed
         if (hash(grid)) == 1:
             return "Already solved"
-        path = graph.better_bfs(hash(grid), 1)      # we get the path and the len of it by bfs
+        
+        graph = Graph(nodes=[i for i in range(1, factorial(grid.m*grid.n)+1)])
+        src = hash(grid)
+        dst = 1
+        queue = [src]
+        marked = [src]
+        prev = [None for i in range(factorial(grid.m*grid.n))] #list of the parents, in the same order as the nodes
+        while len(queue) != 0 and dst not in queue :
+            current = queue.pop(0)
+        
+            # Here we will need the neighbors of current, so we create them
+            for i in range(grid.m):
+                for j in range(grid.n):
+                    if i+1 < grid.m:  # We do all the possible moves, if they dont go outside the dimensions of the grid
+                        G = Grid(grid.m, grid.n, grid.dehash(current))
+                        G.swap((i,j),(i+1,j))
+                        graph.add_edge(current, hash(G))
+
+                    if j+1 < grid.n:  # We do all the possible moves, if they dont go outside the dimensions of the grid
+                        G = Grid(grid.m, grid.n, grid.dehash(current))
+                        G.swap((i,j),(i,j+1))
+                        graph.add_edge(current, hash(G))
+
+            # Now we continue the bfs, because the edges needed have been created
+            for neighbor in graph.graph[current]:
+                if neighbor not in marked:
+                    queue.append(neighbor)
+                    marked.append(neighbor)
+                    prev[neighbor-1]=current
+        
+        path=[dst]
+        while src not in path:
+            path.append(prev[path[-1]-1])
+        path.reverse()
+
         # Then, we need to obtain which swap gives us the transformation from one grid to another
         # We implemented this function as get_swap in the grid.py file
         path = [get_swap(grid.dehash(path[i]),grid.dehash(path[i+1])) for i in range(len(path)-1)]

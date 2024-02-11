@@ -81,43 +81,8 @@ class Graph:
             self.graph[node2].append(node1)
             self.nb_edges += 1
             self.edges.append((node1, node2))
-
-    def bfs(self, src, dst): 
-        """
-        Finds a shortest path from src to dst by BFS.  
-
-        Parameters: 
-        -----------
-        src: NodeType
-            The source node.
-        dst: NodeType
-            The destination node.
-
-        Output: 
-        -------
-        path: list[NodeType] | None
-            The shortest path from src to dst. Returns None if dst is not reachable from src
-        """ 
-        queue = [src]
-        marked = [src]
-        prev = [None for i in range(self.nb_nodes)]  # list of the parents, same order as the nodes
-        while len(queue) != 0:
-            current = queue.pop(0)
-            for neighbor in self.graph[current]:
-                if neighbor not in marked:
-                    queue.append(neighbor)
-                    marked.append(neighbor)
-                    prev[neighbor-1] = current
-        if prev[dst-1] is not None:  # case where dst is reachable from src
-            path = [dst]
-            while src not in path:
-                path.append(prev[path[-1]-1])
-            path.reverse()
-        else:  # case where dst is not reachable from src
-            path = None
-        return path
     
-    def better_bfs(self, src, dst): 
+    def bfs(self, src, dst): 
         """
         Finds a shortest path from src to dst by BFS.  
 
