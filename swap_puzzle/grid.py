@@ -45,8 +45,8 @@ class Grid():
             initial_state = [list(range(i*n+1, (i+1)*n+1)) for i in range(m)]            
         self.state = initial_state
 
-        """self.window = tk.Tk()   #create the window for the representation
-        self.canv = tk.Canvas(self.window, bg="white", height=600, width=600)"""     #create the canvas area to represent the grid
+        self.window = tk.Tk()   #create the window for the representation
+        self.canv = tk.Canvas(self.window, bg="white", height=600, width=600)     #create the canvas area to represent the grid
     
     def __str__(self): 
         """
