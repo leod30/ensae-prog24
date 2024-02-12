@@ -1,4 +1,4 @@
-# Problème d'interface gra  phique avec onyxia : lignes 48 et 49 commentées quand on veut exécuter
+# Problème d'interface gra  phique avec onyxia : lignes 49 et 50 commentées quand on veut exécuter
 
 import numpy as np
 import tkinter as tk
@@ -8,7 +8,6 @@ from graph import Graph
 """
 This is the grid module. It contains the Grid class and its associated methods.
 """
-
 
 
 import random
@@ -59,7 +58,7 @@ class Grid():
             output += f"{self.state[i]}\n"
         return output
 
-    def __repr__(self): 
+    def __repr__(self):
         """
         Returns a representation of the grid with number of rows and columns.
         """
@@ -193,7 +192,7 @@ This method produces a unique result
         return S+1
 
     def dehash(self, hash):
-        #Question 6
+        # Question 6
         """
         Same commentary as hash, but in the other direction
 
@@ -203,37 +202,37 @@ This method produces a unique result
         Returns:
             grid (list) : the list mentioned above
         """
-        hash-=1
+        hash -= 1
         list = []
-        visited=[False for i in range(self.n*self.m)]
+        visited = [False for i in range(self.n*self.m)]
         for k in range(self.n*self.m-1):
-            r, d = hash%factorial(self.m*self.n-k-1), hash//factorial(self.n*self.m-k-1)
+            r, d = hash % factorial(self.m*self.n-k-1), hash//factorial(self.n*self.m-k-1)
             x = 1
-            while (d+1+len([i for i in visited[:x-1] if i]))!=x or visited[x-1] == True:
-                x+=1
+            while (d+1+len([i for i in visited[:x-1] if i])) != x or visited[x-1] is True:
+                x += 1
             list.append(x)
-            visited[x-1]=True
-            hash=r
+            visited[x-1] = True
+            hash = r
         
-        #We add the last coefficient
-        for k in range(1,self.n*self.m+1):
+        # We add the last coefficient
+        for k in range(1, self.n*self.m+1):
             if k not in list:
                 list.append(k)
         
-        #We convert our list into a grid.state
+        # We convert our list into a grid.state
         grid = [[None for j in range(self.n)] for i in range(self.m)]
 
         for i in range(self.m):
-          for j in range(self.n):
-            grid[i][j]=list.pop(0)
+            for j in range(self.n):
+                grid[i][j]=list.pop(0)
         return grid
     
 
     def create_graph(self):
         #Question 7 part 1
-        """Creates the graph corresponding to the situation, first, it adds all the nodes, ie all the possible grids
-            then it creates the edges by doing all the possible swaps on the grids, and adding their hash to the list
-            of the neighbors of the node
+        """Creates the graph corresponding to the situation, first, it adds all the nodes, ie all
+            the possible grids then it creates the edges by doing all the possible swaps on the 
+            grids, and adding their hash to the list of the neighbors of the node
 
         Returns:
             dict: the graph, represented by its adjacency list

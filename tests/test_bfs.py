@@ -5,7 +5,7 @@ sys.path.append("swap_puzzle/")
 from graph import Graph
 
 
-class Test_GridLoading(unittest.TestCase):
+class Test_BFS(unittest.TestCase):
     def test_bfs_grid_file_2(self):
         """this function gets the graph in graph.in and tests if the bfs function works
         with the graph.path.out, by testing bfs(src,dst) (with src and dst the first 2
@@ -43,6 +43,8 @@ class Test_GridLoading(unittest.TestCase):
         for i in range(len(path_list)):
             path_bfs = G.bfs(tuple_list[i][0], tuple_list[i][-1])
             self.assertEqual(path_bfs, path_list[i])
+
+        return path_bfs
 
 
 if __name__ == '__main__':
