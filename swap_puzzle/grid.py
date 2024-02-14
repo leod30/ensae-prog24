@@ -279,3 +279,23 @@ def get_swap(grid1,grid2):
                 gridtest[i][j+1] = c1
                 if gridtest == grid2:
                     return ((i,j),(i,j+1))
+
+    def Manhattan_distance(self):
+        """This functions calculates the Manhattan distance from the grid in self.state to the grid 1,...,mn"""
+        dist = 0
+        for number in range(1,self.m*self.n+1): # We add all the distances of all the numbers
+            # We find the coordinates of number in the self.state grid
+            for i in range(grid.m):
+                if number in grid.state[i]:
+                    line1 = i
+            for j in range(grid.n):
+                if number == grid.state[line][j]:
+                    column1 = j
+            
+            # We find the desired coordinates of number
+            line2, column2 = number // self.n, number % self.n
+
+            # We add this to the distance
+            dist += abs(line1-line2) + abs(column1-column2)
+        
+        return dist

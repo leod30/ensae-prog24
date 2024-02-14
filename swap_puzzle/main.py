@@ -49,3 +49,5 @@ solver.better_get_solution(grid)"""
 # following case: [[1, 2, 6], [4, 5, 3]], 1 swap can resolve the grid but its distance of
 # Manhattan to the sorted position is 2, we will therefore test heuristics which are multiples
 # of this, for example the Manhattan distance divided by 2.
+
+# First, we implement the distance of Manhattan function in the Grid class

@@ -134,3 +134,6 @@ class Solver():
         # We implemented this function as get_swap in the grid.py file
         path = [get_swap(grid.dehash(path[i]),grid.dehash(path[i+1])) for i in range(len(path)-1)]
         return path
+
+    def Astar(self) :
+        c
