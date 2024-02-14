@@ -39,3 +39,13 @@ solver.better_get_solution(grid)"""
 # Thus, we conclude that this method is overall more efficient, we can even do it for slightly
 # bigger grids in a reasonable amount of time which was impossible with the previous method
 # but its complexity depends on the case, and it can be as complex as the previous ones in the worst cases
+
+
+
+# A* algorithm : 
+# To implement this algorithm, we need a heuristic. Our first idea is the Manhattan distance.
+# It consists of saying that the weight of a block and its distance Δx+Δy to its sorted position,
+# and that the evaluated distance from the grid is the sum of the weights. However, in the
+# following case: [[1, 2, 6], [4, 5, 3]], 1 swap can resolve the grid but its distance of
+# Manhattan to the sorted position is 2, we will therefore test heuristics which are multiples
+# of this, for example the Manhattan distance divided by 2.
