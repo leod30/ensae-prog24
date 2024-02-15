@@ -131,7 +131,7 @@ class Solver():
         return path
 
     def a_star(self, grid):
-        """A-star algorithm with the distance of Manhattan as an evaluation of the distance to the goal
+        """A-star algorithm with the hash as an evaluation of the distance to the goal
         
         ---------
         Parameters:
@@ -141,7 +141,6 @@ class Solver():
         open_list = [(grid.Manhattan_distance(), grid)]  # heapq works with list of tuples (heuristic, element)
         closed_set = set()  # Already visited
         while open_list:
-            print(len(open_list))
             # Extract the state with the smallest heuristic from the priority queue
             
             current_heuristic, current_state = heapq.heappop(open_list)
@@ -178,7 +177,7 @@ class Solver():
                 for i, (h, n) in enumerate(open_list):
                     if neighbor.state == n.state:
                         # If the neighbor is already in the open_list and the new cost is lower, update its information
-                        if tentative_g_score+neighbor.Manhattan_distance() < h:
+                        if tentative_g_score+(hash(neighbor)-1) < h:
                             del open_list[i]
                         else:
                             better_option_found = False
@@ -189,7 +188,7 @@ class Solver():
                     neighbor.parent = current_state
 
                     # Calculate the heuristic for the neighbor
-                    neighbor_heuristic = neighbor.Manhattan_distance()
+                    neighbor_heuristic = (hash(neighbor)-1)
 
                     # Add the neighbor to the priority queue
                     heapq.heappush(open_list, (tentative_g_score + neighbor_heuristic, neighbor))
