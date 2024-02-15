@@ -59,33 +59,8 @@ solver.better_get_solution(grid)"""
 # a high value and parent set to None, so we can stop our algorithm when a grid has no parent
 
 #grid = Grid(3, 6, [[15, 12, 9, 16, 8, 11], [3, 10, 17, 1, 14, 13], [18, 4, 5, 2, 7, 6]])
-grid = Grid(2, 3, [[5, 3, 6], [2, 1, 4]])
+#grid = Grid(2, 3, [[5, 3, 6], [2, 1, 4]])
 #grid = Grid(2,2, [[1,3],[2,4]])
 
-
-start_time = time.time()
-
+grid = Grid(3, 3, [[5, 3, 6], [2, 1, 4], [8,7,9]])
 solver.a_star(grid)
-
-end_time = time.time()
-
-# Calculer la durée d'exécution
-execution_time = end_time - start_time
-print("Temps d'exécution :", execution_time, "secondes")
-
-
-
-
-
-
-grid = Grid(2, 3, [[5, 3, 6], [2, 1, 4]])
-
-start_time = time.time()
-
-solver.better_get_solution(grid)
-
-end_time = time.time()
-
-# Calculer la durée d'exécution
-execution_time = end_time - start_time
-print("Temps d'exécution :", execution_time, "secondes")

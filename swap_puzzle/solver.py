@@ -107,17 +107,11 @@ class Solver():
             current = queue.pop(0)
             
             # Here we will need the neighbors of current, so we create them
-            for i in range(grid.m):
-                for j in range(grid.n):
-                    if i+1 < grid.m:  # We do all the possible moves, if they dont go outside the dimensions of the grid
-                        G = Grid(grid.m, grid.n, grid.dehash(current))
-                        G.swap((i,j),(i+1,j))
-                        graph.add_edge(current, hash(G))
+            neighbors = Grid(grid.m,grid.n, grid.dehash(current)).generate_neighbors()
 
-                    if j+1 < grid.n:  # We do all the possible moves, if they dont go outside the dimensions of the grid
-                        G = Grid(grid.m, grid.n, grid.dehash(current))
-                        G.swap((i,j),(i,j+1))
-                        graph.add_edge(current, hash(G))
+            
+            for neighbor in neighbors:
+                graph.add_edge(current, hash(neighbor))
 
             # Now we continue the bfs, because the edges needed have been created
             for neighbor in graph.graph[current]:
@@ -147,6 +141,7 @@ class Solver():
         open_list = [(grid.Manhattan_distance(), grid)]  # heapq works with list of tuples (heuristic, element)
         closed_set = set()  # Already visited
         while open_list:
+            print(len(open_list))
             # Extract the state with the smallest heuristic from the priority queue
             
             current_heuristic, current_state = heapq.heappop(open_list)
