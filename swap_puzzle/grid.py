@@ -48,6 +48,9 @@ class Grid():
 
         """self.window = tk.Tk()   #create the window for the representation
         self.canv = tk.Canvas(self.window, bg="white", height=600, width=600)"""     #create the canvas area to represent the grid
+
+        self.g_score = 100000
+        self.parent = None
     
     def __str__(self): 
         """
@@ -57,6 +60,20 @@ class Grid():
         for i in range(self.m): 
             output += f"{self.state[i]}\n"
         return output
+    
+    def __eq__(self, grid):
+        return self.state == grid.state
+    
+    def __lt__(self, grid):
+        """We compare the grids by their Manhattan's distance,
+        which represents if the grid is more or less solved, in
+        order to be able to use heap.heappush ( G < H means G is
+        better )"""
+        return self.Manhattan_distance() <= grid.Manhattan_distance()
+    
+    def deepcopy(self):
+        list = [[cell for cell in line] for line in self.state]
+        return Grid(self.m, self.n, list)
 
     def __repr__(self):
         """
@@ -252,7 +269,43 @@ This method produces a unique result
                     graph.add_edge(node, hash(G))
 
         return graph
+    
+    def Manhattan_distance(self):
+        """This functions calculates the Manhattan distance from the grid in self.state to the grid 1,...,mn"""
+        dist = 0
+        for number in range(1,self.m*self.n+1): # We add all the distances of all the numbers
+            # We find the coordinates of number in the self.state grid
+            for i in range(self.m):
+                if number in self.state[i]:
+                    line1 = i
+            for j in range(self.n):
+                if number == self.state[line1][j]:
+                    column1 = j
+            
+            # We find the desired coordinates of number
+            line2, column2 = number // self.n, number % self.n
 
+            # We add this to the distance
+            dist += abs(line1-line2) + abs(column1-column2)
+        
+        return dist
+    
+    def generate_neighbors(self):
+        neighbors = []
+        for i in range(self.m):
+            for j in range(self.n):
+                if i+1 < self.m:  # We do all the possible moves, if they dont go outside the dimensions of the grid
+                    current_state_copy = self.deepcopy()
+                    current_state_copy.swap((i,j),(i+1,j))
+                    neighbors.append(current_state_copy)
+
+                if j+1 < self.n:  # We do all the possible moves, if they dont go outside the dimensions of the grid
+                    current_state_copy = self.deepcopy()
+                    current_state_copy.swap((i,j),(i,j+1))
+                    neighbors.append(current_state_copy)
+
+            neighbors = list(set(neighbors))
+        return neighbors
 
 def get_swap(grid1,grid2):
     # Question 7
@@ -279,23 +332,3 @@ def get_swap(grid1,grid2):
                 gridtest[i][j+1] = c1
                 if gridtest == grid2:
                     return ((i,j),(i,j+1))
-
-    def Manhattan_distance(self):
-        """This functions calculates the Manhattan distance from the grid in self.state to the grid 1,...,mn"""
-        dist = 0
-        for number in range(1,self.m*self.n+1): # We add all the distances of all the numbers
-            # We find the coordinates of number in the self.state grid
-            for i in range(grid.m):
-                if number in grid.state[i]:
-                    line1 = i
-            for j in range(grid.n):
-                if number == grid.state[line][j]:
-                    column1 = j
-            
-            # We find the desired coordinates of number
-            line2, column2 = number // self.n, number % self.n
-
-            # We add this to the distance
-            dist += abs(line1-line2) + abs(column1-column2)
-        
-        return dist

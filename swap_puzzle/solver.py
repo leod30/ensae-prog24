@@ -2,6 +2,7 @@ from grid import Grid
 from grid import get_swap
 from graph import Graph
 from math import factorial
+import heapq
 
 class Solver(): 
     """
@@ -104,7 +105,7 @@ class Solver():
         prev = [None for i in range(factorial(grid.m*grid.n))] #list of the parents, in the same order as the nodes
         while len(queue) != 0 and dst not in queue :
             current = queue.pop(0)
-        
+            
             # Here we will need the neighbors of current, so we create them
             for i in range(grid.m):
                 for j in range(grid.n):
@@ -135,5 +136,68 @@ class Solver():
         path = [get_swap(grid.dehash(path[i]),grid.dehash(path[i+1])) for i in range(len(path)-1)]
         return path
 
-    def Astar(self) :
-        c
+    def a_star(self, grid):
+        """A-star algorithm with the distance of Manhattan as an evaluation of the distance to the goal
+        
+        ---------
+        Parameters:
+            grid : the grid that we want to solve"""
+        grid.g_score = 0  # The grid from where we start
+        # Initialize the priority queue
+        open_list = [(grid.Manhattan_distance(), grid)]  # heapq works with list of tuples (heuristic, element)
+        closed_set = set()  # Already visited
+        while open_list:
+            # Extract the state with the smallest heuristic from the priority queue
+            
+            current_heuristic, current_state = heapq.heappop(open_list)
+            # Check if the current state is the goal state
+            if current_state.state == Grid(grid.m, grid.n).state :
+
+                # Reconstruct the path from the goal state to the start state
+                path = []
+                while current_state is not None:
+                    path.append(current_state)
+                    current_state = current_state.parent
+                # Return the path in reverse order since it was constructed from goal to start
+                path.reverse()
+                path = [get_swap(path[i].state,path[i+1].state) for i in range(len(path)-1)]
+                return path
+                
+
+            # Add the current state to the closed set
+            closed_set.add(current_state)
+
+            # Generate neighbors of the current state
+            neighbors = current_state.generate_neighbors()
+
+            for neighbor in neighbors:
+                # Check if the neighbor is already in the closed set
+                if neighbor in closed_set:
+                    continue
+
+                # Calculate the path cost to the neighbor
+                tentative_g_score = current_state.g_score + 1
+
+                # Check if the neighbor is already in the open_list
+                better_option_found = True
+                for i, (h, n) in enumerate(open_list):
+                    if neighbor.state == n.state:
+                        # If the neighbor is already in the open_list and the new cost is lower, update its information
+                        if tentative_g_score+neighbor.Manhattan_distance() < h:
+                            del open_list[i]
+                        else:
+                            better_option_found = False
+                        break
+                
+                if better_option_found:
+                    neighbor.g_score = tentative_g_score
+                    neighbor.parent = current_state
+
+                    # Calculate the heuristic for the neighbor
+                    neighbor_heuristic = neighbor.Manhattan_distance()
+
+                    # Add the neighbor to the priority queue
+                    heapq.heappush(open_list, (tentative_g_score + neighbor_heuristic, neighbor))
+
+        # If no path found, return None
+        return None

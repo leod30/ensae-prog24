@@ -6,6 +6,8 @@ from grid import Grid
 from solver import Solver
 from graph import Graph
 
+import time
+
 # Question 3 : naive solver
 solver = Solver()
 """grid = Grid(2, 3, [[5, 3, 6], [2, 1, 4]])
@@ -51,3 +53,39 @@ solver.better_get_solution(grid)"""
 # of this, for example the Manhattan distance divided by 2.
 
 # First, we implement the distance of Manhattan function in the Grid class
+
+# Once this is done, we can code the algorithm (in solver class), but first, we create the g_score and parent
+# attribute in the grid class, g_score (which will be the distance from this node to the initial state) with 
+# a high value and parent set to None, so we can stop our algorithm when a grid has no parent
+
+#grid = Grid(3, 6, [[15, 12, 9, 16, 8, 11], [3, 10, 17, 1, 14, 13], [18, 4, 5, 2, 7, 6]])
+grid = Grid(2, 3, [[5, 3, 6], [2, 1, 4]])
+#grid = Grid(2,2, [[1,3],[2,4]])
+
+
+start_time = time.time()
+
+solver.a_star(grid)
+
+end_time = time.time()
+
+# Calculer la durée d'exécution
+execution_time = end_time - start_time
+print("Temps d'exécution :", execution_time, "secondes")
+
+
+
+
+
+
+grid = Grid(2, 3, [[5, 3, 6], [2, 1, 4]])
+
+start_time = time.time()
+
+solver.better_get_solution(grid)
+
+end_time = time.time()
+
+# Calculer la durée d'exécution
+execution_time = end_time - start_time
+print("Temps d'exécution :", execution_time, "secondes")
