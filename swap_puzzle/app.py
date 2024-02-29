@@ -1,3 +1,6 @@
+import os
+os.environ['SDL_AUDIODRIVER'] = 'dsp'
+
 import pygame
 from grid import Grid
 import button
@@ -6,8 +9,9 @@ import time
 from math import sqrt
 from random import randint
 
+
 pygame.init()
-"""
+
 #create game window
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 800
@@ -113,8 +117,8 @@ def draw_text(text, font, text_col, x, y):
 
 def generate_grid(lin, col, level):
     """
-#generates a random grid, based on the level : if easy, each coefficient will be in a range on 50% of the grid size, if medium 75% and 100% for hard
-"""
+    generates a random grid, based on the level : if easy, each coefficient will be in a range on 50% of the grid size, if medium 75% and 100% for hard
+    """
     area = (50 + level*25)/100  #range where the coefficient will be generated around his solved position
     d_max = sqrt((lin-1)**2 + (col-1)**2)
     placed_coeff = []
@@ -438,4 +442,3 @@ while run:
     pygame.display.update()
 
 pygame.quit()
-"""
