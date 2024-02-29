@@ -1,9 +1,7 @@
-# Problème d'interface gra  phique avec onyxia : lignes 49 et 50 commentées quand on veut exécuter
-
 import numpy as np
-import tkinter as tk
 from math import factorial
 from graph import Graph
+import pygame
 
 """
 This is the grid module. It contains the Grid class and its associated methods.
@@ -42,12 +40,16 @@ class Grid():
         """
         self.m = m
         self.n = n
+        self.coeff = 7 - self.m * self.n / 45
+        self.displayx = 1200
+        self.displayy = 900
         if not initial_state:
             initial_state = [list(range(i*n+1, (i+1)*n+1)) for i in range(m)]            
         self.state = initial_state
 
-        """self.window = tk.Tk()   #create the window for the representation
-        self.canv = tk.Canvas(self.window, bg="white", height=600, width=600)"""     #create the canvas area to represent the grid
+        pygame.init()
+        self.screen = pygame.display.set_mode((self.displayx, self.displayy))
+        pygame.display.set_caption("GRID REPRESENTATION")
 
         self.g_score = 100000
         self.parent = None
@@ -145,37 +147,36 @@ class Grid():
         return grid
 
 
-    def grid_representation(self):
+    def grid_representation(self, col_bg, col_txt):
         """
-        Creates a grid representation with tkinter : works with another compiler but it seems like there isn't an .
+        Creates a grid representation with pygame : we suggest you to run it on vscode
         """
+        running = True
+        while running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
 
-        self.window.title("GRID")
-        self.canv.pack()
-        self.canv.create_text(300,
-                        50,
-                        fill="black",
-                        font="Comic 25 italic bold",
-                        text="GRID REPRESENTATION")
-        self.canv.create_text(300,
-                        550,
-                        fill="black",
-                        font="Comic 30 bold",
-                        text=f"Nb coups : X")
-        for i in range(self.m):
-            for j in range(self.n):
-                self.canv.create_rectangle(600 * (j + 2)/(self.n+4),
-                                    600 * (i + 2)/(self.m+4),
-                                    600 * (j + 3)/(self.n+4),
-                                    600 * (i + 3)/(self.m+4),
-                                    outline="#baaca2",
-                                    width=10)
-                self.canv.create_text(600 * (j + 5/2)/(self.n+4),
-                                      600 * (i + 5/2)/(self.m+4),
-                                      fill="black",
-                                      font=f"Comic {int(100/max(self.m,self.n))} bold",
-                                      text=f"{int(self.state[i][j])}")
-        self.window.mainloop()
+            self.screen.fill(col_bg)
+
+            for i in range(self.m):
+                for j in range(self.n):
+                    pygame.draw.rect(surface=self.screen, color=col_txt,
+                                     rect=pygame.Rect(self.displayx * (j + 2) / (self.n + 4),
+                                                      self.displayy * (i + 2) / (self.m + 4),
+                                                      self.displayx / (self.n + 4) + self.coeff,
+                                                      self.displayy / (self.m + 4) + self.coeff),
+                                     width=int(self.coeff))
+                    font = pygame.font.SysFont('verdana bold', int(300 / max(self.m, self.n)))
+                    text = font.render(str(self.state[i][j]), True, col_txt)
+                    self.screen.blit(text, (self.displayx * (j + 5 / 2) / (self.n + 4) - text.get_rect().width / 2 +
+                                             self.coeff / 2,
+                                             self.displayy * (i + 5 / 2) / (self.m + 4) - text.get_rect().height / 2 +
+                                             self.coeff / 2))
+
+            pygame.display.flip()
+
+        pygame.quit()
 
     def __hash__(self):
         #Question 6
