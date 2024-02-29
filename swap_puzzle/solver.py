@@ -138,7 +138,7 @@ class Solver():
             grid : the grid that we want to solve"""
         grid.g_score = 0  # The grid from where we start
         # Initialize the priority queue
-        open_list = [(grid.Manhattan_distance(), grid)]  # heapq works with list of tuples (heuristic, element)
+        open_list = [(hash(grid), grid)]  # heapq works with list of tuples (heuristic, element)
         closed_set = set()  # Already visited
         while open_list:
             # Extract the state with the smallest heuristic from the priority queue

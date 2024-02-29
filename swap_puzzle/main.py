@@ -1,3 +1,6 @@
+import os
+os.environ['SDL_AUDIODRIVER'] = 'dsp'
+
 # If you run on Onyxia, we suggest you to go to Grid --> comment lines 48 and 49
 # Because there is no environment to display tkinter windows on onyxia
 # But it works on all the other compilers
@@ -71,7 +74,7 @@ solver.a_star(grid)
 end_time = time.time()
 
 execution_time = end_time - start_time
-print("Execution time :", execution_time, "seconds")
+print("1. Execution time :", execution_time, "seconds")  #This lasts around 0.1 second
 
 #############
 
@@ -81,4 +84,6 @@ solver.better_get_solution(grid)
 end_time = time.time()
 
 execution_time = end_time - start_time
-print("Execution time :", execution_time, "seconds")
+print("2. Execution time :", execution_time, "seconds")  #This lasts around 50 seconds, a lot longer
+
+# Then, we chose to use pygame to create a game, this is done in the "app.py" file. Warning : if you run it on Onyxia or vscode via github, it doesn't have any environment to display it

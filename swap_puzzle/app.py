@@ -110,6 +110,9 @@ continue_button_l = Button(mid, 27*SCREEN_HEIGHT/32, "CONTINUE", dark_blue, ligh
 
 
 def draw_text(text, font, text_col, x, y):
+  """
+  This function draws a text on the screen, but the coordinates are the center of the text (not top left as usual in pygame)
+  """
   img = font.render(text, True, text_col)
   xx = img.get_rect().width
   yy = img.get_rect().height
@@ -165,7 +168,7 @@ def generate_grid(lin, col, level):
 run = True
 time.sleep(0.2)
 while run:
-
+    #change variables depending on the theme
     if theme == "dark" :
         solve_button = solve_button_d
         best_button = best_button_d
@@ -231,6 +234,7 @@ while run:
         draw_text("PUZZLE", font_title_2, txt, 5.9*SCREEN_WIDTH/10, 11*SCREEN_HEIGHT/20)
         screen.blit(swap_puzzle_scaled, (3*SCREEN_WIDTH/10-110, 37*SCREEN_HEIGHT/80-90))
 
+    #menu screen
     elif program_state == "menu":
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -261,7 +265,7 @@ while run:
         elif leave_button.draw(screen):
             run = False
 
-    # select size
+    # select size screen
     elif program_state == "select size":
         draw_text("COLNS", font_big, col_col, mid/2, 6*SCREEN_HEIGHT/20)
         draw_text("LINES", font_big, col_lin, 3*mid/2, 6*SCREEN_HEIGHT/20)
@@ -308,6 +312,7 @@ while run:
                 time.sleep(0.2)
                 active = []
 
+    #screen to enter the coefficients of our grid
     elif program_state == "enter coeff":
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -318,6 +323,7 @@ while run:
         program_state = "best"
         pass
 
+    #screen to chose level of difficulty
     elif program_state == "level":
         try:
             for event in pygame.event.get():
@@ -342,6 +348,7 @@ while run:
             program_state = "solve"
             score = 0
 
+    #screen of the game
     elif program_state == "solve":
 
         if home_button.draw(screen):
@@ -414,6 +421,7 @@ while run:
             program_state = "menu"
             time.sleep(0.2)
     
+    #screen displayed at the end of the game
     elif program_state == "end game":
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

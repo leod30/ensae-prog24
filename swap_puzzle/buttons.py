@@ -1,3 +1,7 @@
+"""
+A button class that generates buttons from scratch
+"""
+
 import pygame
 import time
 

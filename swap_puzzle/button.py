@@ -1,3 +1,7 @@
+"""
+A button class that generates buttons based on an image
+"""
+
 import pygame
 
 #button class

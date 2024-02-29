@@ -272,7 +272,7 @@ This method produces a unique result
         return graph
     
     def Manhattan_distance(self):
-        """This functions calculates the Manhattan distance from the grid in self.state to the grid 1,...,mn"""
+        """This functions calculates the Manhattan distance from the grid in self.state to the grid 1,...,mn, but we no longer use it"""
         dist = 0
         for number in range(1,self.m*self.n+1): # We add all the distances of all the numbers
             # We find the coordinates of number in the self.state grid
@@ -292,6 +292,9 @@ This method produces a unique result
         return dist
     
     def generate_neighbors(self):
+        """
+        this function does all the swaps possible from a grid, and returns the list of the neighbors as a list
+        """
         neighbors = []
         for i in range(self.m):
             for j in range(self.n):
