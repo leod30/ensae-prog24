@@ -3,14 +3,15 @@ os.environ['SDL_AUDIODRIVER'] = 'dsp'
 
 import pygame
 from grid import Grid
+from solver import Solver
 import button
 from buttons import Button
 import time
 from math import sqrt
 from random import randint
 
-
 pygame.init()
+solver = Solver()
 
 #create game window
 SCREEN_WIDTH = 1200
@@ -48,6 +49,8 @@ col_lin = yellow_passive
 
 #define fonts
 font = pygame.font.SysFont("arialblack", 40)
+font_small = pygame.font.SysFont("verdana", 15)
+
 font_end = pygame.font.SysFont("verdana italic", 50)
 
 font_big = pygame.font.SysFont("arialblack", 65)
@@ -85,6 +88,7 @@ return_menu_button_d = Button(mid, 19*SCREEN_HEIGHT/32, "MAIN MENU", yellow, dar
 quit_button_d = Button(mid, 25*SCREEN_HEIGHT/32, "LEAVE GAME", yellow, dark_hover, 55, 5, radius = 8, padding_x = 65)
 
 continue_button_d = Button(mid, 27*SCREEN_HEIGHT/32, "CONTINUE", yellow, dark_hover, 70, 8, radius = 8, padding_x = 40, padding_y = 40)
+next_button_d = Button(mid, 27*SCREEN_HEIGHT/32, "NEXT SWAP", yellow, dark_hover, 70, 8, radius = 8, padding_x = 40, padding_y = 40)
 
 #create button instances - light theme
 solve_button_l = Button(mid, 15*SCREEN_HEIGHT/32, "SOLVE THE GRID", dark_blue, light_hover, 44, 4, radius = 8)
@@ -107,6 +111,7 @@ return_menu_button_l = Button(mid, 19*SCREEN_HEIGHT/32, "MAIN MENU", dark_blue, 
 quit_button_l = Button(mid, 25*SCREEN_HEIGHT/32, "LEAVE GAME", dark_blue, light_hover, 55, 5, radius = 8, padding_x = 65)
 
 continue_button_l = Button(mid, 27*SCREEN_HEIGHT/32, "CONTINUE", dark_blue, light_hover, 70, 8, radius = 8, padding_x = 40, padding_y = 40)
+next_button_l = Button(mid, 27*SCREEN_HEIGHT/32, "NEXT SWAP", dark_blue, light_hover, 70, 8, radius = 8, padding_x = 40, padding_y = 40)
 
 
 def draw_text(text, font, text_col, x, y):
@@ -186,6 +191,7 @@ while run:
         replay_button = replay_button_d
         return_menu_button = return_menu_button_d
         quit_button = quit_button_d 
+        next_button = next_button_d
         easy = easy_d
         medium = medium_d
         hard = hard_d
@@ -209,6 +215,7 @@ while run:
         replay_button = replay_button_l
         return_menu_button = return_menu_button_l
         quit_button = quit_button_l
+        next_button = next_button_l
         easy = easy_l
         medium = medium_l
         hard = hard_l
@@ -269,19 +276,21 @@ while run:
     elif program_state == "select size":
         draw_text("COLNS", font_big, col_col, mid/2, 6*SCREEN_HEIGHT/20)
         draw_text("LINES", font_big, col_lin, 3*mid/2, 6*SCREEN_HEIGHT/20)
+        if game == "enter coeff":
+            draw_text("Enter small size (cols*lines < 12) to continue", font_small, "grey", SCREEN_WIDTH/2, 9.5*SCREEN_HEIGHT/10)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_BACKSPACE:
                     if col_active:
-                        columns = columns[:-1]
+                        columns = str(columns)[:-1]
                     if lin_active:
-                        lines = lines[:-1]
+                        lines = str(lines)[:-1]
                 else:
-                    if col_active and len(columns)<1:
+                    if col_active and len(str(columns))<1:
                         columns += event.unicode
-                    if lin_active and len(lines)<1:
+                    if lin_active and len(str(lines))<1:
                         lines += event.unicode
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
@@ -298,30 +307,82 @@ while run:
         pygame.draw.rect(screen,col_col,rectangle_columns,10)
         pygame.draw.rect(screen,col_lin,rectangle_lines,10)
 
-        col_surface = font_select.render(columns,True,col_col)
+        col_surface = font_select.render(str(columns),True,col_col)
         screen.blit(col_surface, (rectangle_columns.topleft[0]+18, rectangle_columns.topleft[1]-18))
-        lin_surface = font_select.render(lines,True,col_lin)
+        lin_surface = font_select.render(str(lines),True,col_lin)
         screen.blit(lin_surface, (rectangle_lines.topleft[0]+18, rectangle_lines.topleft[1]-18))
 
-        if continue_button.draw(screen) and columns.isdigit() and lines.isdigit():
-            if int(columns) <= 0 or int(lines) <= 0:
-                pass
-            else:
+        if continue_button.draw(screen) and str(columns).isdigit() and str(lines).isdigit():
+            if (game == "level" or int(columns)*int(lines) <= 10) and (int(columns) > 0 and int(lines) > 0):  #if the grid is too big and we are in "best solve", A* star won't work
                 program_state = game
                 #select cases to swap them in the solve
                 time.sleep(0.2)
                 active = []
+                coeff = [["" for _ in range(int(columns))] for __ in range(int(lines))]
 
     #screen to enter the coefficients of our grid
     elif program_state == "enter coeff":
+        
+        draw_text("Enter your numbers :", font_big, txt, mid, SCREEN_HEIGHT/8)
+
+        lines, columns = int(lines), int(columns)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
 
-        # mettre toutes les cases
-        # mettre dans une liste puis matrice puis générer G
-        program_state = "best"
-        pass
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                time.sleep(0.2)
+                x, y = event.pos
+                j, i = int((x/SCREEN_WIDTH*(columns+4))//1 - 2), int((y/SCREEN_HEIGHT*(lines+4))//1 - 2) 
+                if 0 <=  i <= lines-1 and 0 <= j <= columns-1:
+                    active = (i,j)
+                else:
+                    active = None
+                
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_BACKSPACE:
+                    if active:
+                        coeff[active[0]][active[1]] = coeff[active[0]][active[1]][:-1]
+                
+                else:
+                    if active and len(coeff[active[0]][active[1]]) <1:
+                        coeff[active[0]][active[1]] += event.unicode
+
+        lines, columns = int(lines), int(columns)
+
+        for i in range(lines):
+            for j in range(columns):
+
+                #if case is selected we change its color
+                if (i,j) == active:
+                    pygame.draw.rect(surface=screen, color=hover,
+                                rect=pygame.Rect(SCREEN_WIDTH * (j + 2) / (columns + 4),
+                                                SCREEN_HEIGHT * (i + 2) / (lines + 4),
+                                                SCREEN_WIDTH / (columns + 4) + 7 - columns*lines/45,
+                                                SCREEN_HEIGHT / (lines + 4) + 7 - columns*lines/45),
+                                width=0)
+                
+                #then, we draw the cells
+                pygame.draw.rect(surface=screen, color=txt,
+                                rect=pygame.Rect(SCREEN_WIDTH * (j + 2) / (columns + 4),
+                                                SCREEN_HEIGHT * (i + 2) / (lines + 4),
+                                                SCREEN_WIDTH / (columns + 4) + 7 - columns*lines/45,
+                                                SCREEN_HEIGHT / (lines + 4) + 7 - columns*lines/45),
+                                width=int(7 - columns*lines/45))
+                font = pygame.font.SysFont('verdana bold', int(400 / max(columns, lines)))
+                text = font.render(str(coeff[i][j]), True, txt)
+                screen.blit(text, 
+                            (SCREEN_WIDTH*(j + 5 / 2) / (columns + 4) - text.get_rect().width / 2 + (7 - columns*lines/45) / 2, 
+                             SCREEN_HEIGHT * (i + 5 / 2) / (lines + 4) - text.get_rect().height / 2 + (7 - columns*lines/45) / 2))
+        
+        if set([str(i) for i in list(range(1,columns*lines+1))]) == set([c for line in coeff for c in line]):
+            if continue_button.draw(screen):
+                time.sleep(0.2)
+                coeff = [[int(c) for c in line] for line in coeff]
+                G = Grid(lines, columns, coeff)   
+                program_state = "best"
+                score = 0
+
 
     #screen to chose level of difficulty
     elif program_state == "level":
@@ -427,8 +488,13 @@ while run:
             if event.type == pygame.QUIT:
                 run = False
         
-        draw_text("CONGRATULATIONS", font_title_end, txt, mid, 4*SCREEN_HEIGHT/32)
-        draw_text(("You solved the grid in "+str(score)+" move(s)!"), font_end, end, mid, 7*SCREEN_HEIGHT/32)
+        if game == "level":
+            draw_text("CONGRATULATIONS", font_title_end, txt, mid, 4*SCREEN_HEIGHT/32)
+            draw_text(("You solved the grid in "+str(score)+" move(s)!"), font_end, end, mid, 7*SCREEN_HEIGHT/32)
+        
+        else:
+            draw_text("GRID SOLVED", font_title_end, txt, mid, 4*SCREEN_HEIGHT/32)
+            draw_text(("The grid was solved in "+str(score)+" move(s)!"), font_end, end, mid, 7*SCREEN_HEIGHT/32)
 
         if replay_button.draw(screen):
             program_state = "select size"
@@ -441,11 +507,53 @@ while run:
             time.sleep(0.2)
 
     elif program_state == "best":
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                run = False
+        
+        path = solver.a_star(G)
 
-        pass
+        while path:
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    run = False
+            
+            screen.fill(bg)
+            draw_text("The next swap is :", font_big, txt, mid, SCREEN_HEIGHT/8)
+
+            for i in range(G.m):
+                for j in range(G.n):
+                    #if case is selected we change its color
+                    if (i,j) in path[0]:
+                        pygame.draw.rect(surface=screen, color=hover,
+                                    rect=pygame.Rect(SCREEN_WIDTH * (j + 2) / (G.n + 4),
+                                                    SCREEN_HEIGHT * (i + 2) / (G.m + 4),
+                                                    SCREEN_WIDTH / (G.n + 4) + G.coeff,
+                                                    SCREEN_HEIGHT / (G.m + 4) + G.coeff),
+                                    width=0)
+                    
+                    #then, we draw the cells
+                    pygame.draw.rect(surface=screen, color=txt,
+                                    rect=pygame.Rect(SCREEN_WIDTH * (j + 2) / (G.n + 4),
+                                                    SCREEN_HEIGHT * (i + 2) / (G.m + 4),
+                                                    SCREEN_WIDTH / (G.n + 4) + G.coeff,
+                                                    SCREEN_HEIGHT / (G.m + 4) + G.coeff),
+                                    width=int(G.coeff))
+                    font = pygame.font.SysFont('verdana bold', int(400 / max(G.m, G.n)))
+                    text = font.render(str(G.state[i][j]), True, txt)
+                    G.screen.blit(text, (SCREEN_WIDTH * (j + 5 / 2) / (G.n + 4) - text.get_rect().width / 2 +
+                                        G.coeff / 2,
+                                        SCREEN_HEIGHT * (i + 5 / 2) / (G.m + 4) - text.get_rect().height / 2 +
+                                        G.coeff / 2))
+            
+            if next_button.draw(screen):
+                time.sleep(0.2)
+                G.swap(path[0][0], path[0][1])
+                path.pop(0)
+                score += 1
+            
+            pygame.display.update()
+
+        program_state = "end game"
+
 
     pygame.display.update()
 
