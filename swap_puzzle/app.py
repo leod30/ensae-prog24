@@ -1,5 +1,6 @@
 import os
 os.environ['SDL_AUDIODRIVER'] = 'dsp'
+path = os.getcwd()
 
 import pygame
 from grid import Grid
@@ -63,8 +64,12 @@ font_select = pygame.font.SysFont("arialblack", 90)
 
 
 #load image
-swap_puzzle_img = pygame.image.load('swap_puzzle.png').convert_alpha()
-swap_puzzle_scaled = pygame.transform.scale(swap_puzzle_img, (180, 180))
+if path[-4:] == "main":
+    swap_puzzle_img = pygame.image.load('swap_puzzle/swap_puzzle.png').convert_alpha()
+    swap_puzzle_scaled = pygame.transform.scale(swap_puzzle_img, (180, 180))
+else:
+    swap_puzzle_img = pygame.image.load('swap_puzzle.png').convert_alpha()
+    swap_puzzle_scaled = pygame.transform.scale(swap_puzzle_img, (180, 180))
 
 
 #create button instances - dark theme
