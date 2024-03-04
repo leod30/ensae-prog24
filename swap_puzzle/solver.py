@@ -3,13 +3,14 @@ from grid import get_swap
 from graph import Graph
 from math import factorial
 import heapq
+import heuristics
 
 class Solver(): 
     """
     A solver class, to be implemented.
     """
 
-    def get_coord(self, number, grid:[Grid]):
+    def get_coord(self, number, grid):
         """
         Gets the coordinates (i,j) of number in grid, i being the line and j the column number
 
@@ -27,7 +28,7 @@ class Solver():
                 column = j
         return (line, column)
 
-    def get_seq(self, start: [tuple[int]], finish: [tuple[int]]):
+    def get_seq(self, start: tuple, finish: tuple):
         """
         Gets the sequence of swaps necessary to get the cell that has the coordinates "start" to "finish"
 
@@ -130,7 +131,7 @@ class Solver():
         path = [get_swap(grid.dehash(path[i]),grid.dehash(path[i+1])) for i in range(len(path)-1)]
         return path
 
-    def a_star(self, grid):
+    def a_star(self, grid, heuristic = heuristics.hash):
         """A-star algorithm with the hash as an evaluation of the distance to the goal
         
         ---------
@@ -138,7 +139,7 @@ class Solver():
             grid : the grid that we want to solve"""
         grid.g_score = 0  # The grid from where we start
         # Initialize the priority queue
-        open_list = [(hash(grid), grid)]  # heapq works with list of tuples (heuristic, element)
+        open_list = [(heuristic(grid), grid)]  # heapq works with list of tuples (heuristic, element)
         closed_set = set()  # Already visited
         while open_list:
             # Extract the state with the smallest heuristic from the priority queue
@@ -177,7 +178,7 @@ class Solver():
                 for i, (h, n) in enumerate(open_list):
                     if neighbor.state == n.state:
                         # If the neighbor is already in the open_list and the new cost is lower, update its information
-                        if tentative_g_score+(hash(neighbor)-1) < h:
+                        if tentative_g_score+(heuristic(neighbor)-1) < h:
                             del open_list[i]
                         else:
                             better_option_found = False
@@ -188,7 +189,7 @@ class Solver():
                     neighbor.parent = current_state
 
                     # Calculate the heuristic for the neighbor
-                    neighbor_heuristic = (hash(neighbor)-1)
+                    neighbor_heuristic = (heuristic(neighbor)-1)
 
                     # Add the neighbor to the priority queue
                     heapq.heappush(open_list, (tentative_g_score + neighbor_heuristic, neighbor))
