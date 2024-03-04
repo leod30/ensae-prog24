@@ -8,6 +8,7 @@ os.environ['SDL_AUDIODRIVER'] = 'dsp'
 from grid import Grid
 from solver import Solver
 from graph import Graph
+import heuristics
 
 import time
 
@@ -61,7 +62,7 @@ solver.better_get_solution(grid)"""
 # attribute in the grid class, g_score (which will be the distance from this node to the initial state) with 
 # a high value and parent set to None, so we can stop our algorithm when a grid has no parent
 
-# Doing this, we found out that the Manhattan distance was not efficient, and we thought of our hash : this
+# Doing this, we found out that the Manhattan distance, even with some changes was not efficient, and we thought of our hash : this
 # could be a great heuristic, so we tested it, and it works very well!
 
 # For example, here, we tested on a 3,3 grid the previous and the Astar algorithm : the previous took 52
@@ -70,7 +71,7 @@ solver.better_get_solution(grid)"""
 
 start_time = time.time()
 grid = Grid(3, 3, [[5, 3, 6], [2, 1, 4], [8,7,9]])
-solver.a_star(grid)
+solver.a_star(grid, heuristics.hash)
 end_time = time.time()
 
 execution_time = end_time - start_time
