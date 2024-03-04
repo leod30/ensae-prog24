@@ -15,12 +15,13 @@ pygame.init()
 solver = Solver()
 
 #create game window
-SCREEN_WIDTH = 1200
-SCREEN_HEIGHT = 800
+SCREEN_WIDTH = pygame.display.Info().current_w
+SCREEN_HEIGHT = pygame.display.Info().current_h
+coeff_font = SCREEN_WIDTH/1200
 mid = SCREEN_WIDTH/2
 
-rectangle_columns = pygame.Rect(mid/2-50, 9*SCREEN_HEIGHT/20-50,100,100)
-rectangle_lines = pygame.Rect(3*mid/2-50, 9*SCREEN_HEIGHT/20-50,100,100)
+rectangle_columns = pygame.Rect(mid/2-50, 9*SCREEN_HEIGHT/20-50,100*coeff_font,100*coeff_font)
+rectangle_lines = pygame.Rect(3*mid/2-50, 9*SCREEN_HEIGHT/20-50,100*coeff_font,100*coeff_font)
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("SWAP PUZZLE")
@@ -49,74 +50,75 @@ lin_active = False
 col_lin = yellow_passive
 
 #define fonts
-font = pygame.font.SysFont("arialblack", 40)
-font_small = pygame.font.SysFont("verdana", 15)
+coeff_font = SCREEN_WIDTH/1200
+font = pygame.font.SysFont("arialblack", int(40*coeff_font))
+font_small = pygame.font.SysFont("verdana", int(15*coeff_font))
 
-font_end = pygame.font.SysFont("verdana italic", 50)
+font_end = pygame.font.SysFont("verdana italic", int(50*coeff_font))
 
-font_big = pygame.font.SysFont("arialblack", 65)
-font_title_1 = pygame.font.SysFont("arialblack", 150)
-font_title_2 = pygame.font.SysFont("arialblack", 120)
-font_title_end = pygame.font.SysFont("verdana bold", 130)
-font_menu_1 = pygame.font.SysFont("arialblack", 120)
-font_menu_2 = pygame.font.SysFont("arialblack", 96)
-font_select = pygame.font.SysFont("arialblack", 90)
+font_big = pygame.font.SysFont("arialblack", int(65*coeff_font))
+font_title_1 = pygame.font.SysFont("arialblack", int(150*coeff_font))
+font_title_2 = pygame.font.SysFont("arialblack", int(120*coeff_font))
+font_title_end = pygame.font.SysFont("verdana bold", int(130*coeff_font))
+font_menu_1 = pygame.font.SysFont("arialblack", int(120*coeff_font))
+font_menu_2 = pygame.font.SysFont("arialblack", int(96*coeff_font))
+font_select = pygame.font.SysFont("arialblack", int(90*coeff_font))
 
 
 #load image
 if path[-4:] == "main":
     swap_puzzle_img = pygame.image.load('swap_puzzle/swap_puzzle.png').convert_alpha()
-    swap_puzzle_scaled = pygame.transform.scale(swap_puzzle_img, (180, 180))
+    swap_puzzle_scaled = pygame.transform.scale(swap_puzzle_img, (coeff_font*180, coeff_font*180))
 else:
     swap_puzzle_img = pygame.image.load('swap_puzzle.png').convert_alpha()
-    swap_puzzle_scaled = pygame.transform.scale(swap_puzzle_img, (180, 180))
+    swap_puzzle_scaled = pygame.transform.scale(swap_puzzle_img, (coeff_font*180, coeff_font*180))
 
 
 #create button instances - dark theme
-solve_button_d = Button(mid, 15*SCREEN_HEIGHT/32, "SOLVE THE GRID", yellow, dark_hover, 44, 4, radius = 8)
-best_button_d = Button(mid, 19*SCREEN_HEIGHT/32, "BEST SOLUTION", yellow, dark_hover, 44, 4, radius = 8, padding_x = 25)
-theme_button_d = Button(mid, 23*SCREEN_HEIGHT/32, "CHANGE THEME", yellow, dark_hover, 44, 4, radius = 8, padding_x = 28)
-leave_button_d = Button(mid, 27*SCREEN_HEIGHT/32, "LEAVE THE GAME", yellow, dark_hover, 44, 4, radius = 8, padding_x = 18)
-home_button_d = Button(mid/8, SCREEN_HEIGHT/16, "HOME", yellow, dark_hover, 44, 4, radius = 8, padding_x = 18)
-pause_button_d = Button(15*mid/8, SCREEN_HEIGHT/16, "PAUSE", yellow, dark_hover, 44, 4, radius = 8, padding_x = 18)
+solve_button_d = Button(mid, 15*SCREEN_HEIGHT/32, "SOLVE THE GRID", yellow, dark_hover, int(coeff_font*44), 4, radius = 8)
+best_button_d = Button(mid, 19*SCREEN_HEIGHT/32, "BEST SOLUTION", yellow, dark_hover, int(coeff_font*44), 4, radius = 8, padding_x = 25)
+theme_button_d = Button(mid, 23*SCREEN_HEIGHT/32, "CHANGE THEME", yellow, dark_hover, int(coeff_font*44), 4, radius = 8, padding_x = 28)
+leave_button_d = Button(mid, 27*SCREEN_HEIGHT/32, "LEAVE THE GAME", yellow, dark_hover, int(coeff_font*44), 4, radius = 8, padding_x = 18)
+home_button_d = Button(mid/8, SCREEN_HEIGHT/16, "HOME", yellow, dark_hover, int(coeff_font*44), 4, radius = 8, padding_x = 18)
+pause_button_d = Button(15*mid/8, SCREEN_HEIGHT/16, "PAUSE", yellow, dark_hover, int(coeff_font*44), 4, radius = 8, padding_x = 18)
 #pause buttons
-resume_button_d = Button(mid, 10*SCREEN_HEIGHT/32, "RESUME GAME", yellow, dark_hover, 55, 5, radius = 8)
-change_size_button_d = Button(mid, 16*SCREEN_HEIGHT/32, "CHANGE SIZE", yellow, dark_hover, 55, 5, radius = 8, padding_x = 45)
-menu_button_d = Button(mid, 22*SCREEN_HEIGHT/32, "MAIN MENU", yellow, dark_hover, 55, 5, radius = 8, padding_x = 88)
+resume_button_d = Button(mid, 10*SCREEN_HEIGHT/32, "RESUME GAME", yellow, dark_hover, int(coeff_font*55), 5, radius = 8)
+change_size_button_d = Button(mid, 16*SCREEN_HEIGHT/32, "CHANGE SIZE", yellow, dark_hover, int(coeff_font*55), 5, radius = 8, padding_x = 45)
+menu_button_d = Button(mid, 22*SCREEN_HEIGHT/32, "MAIN MENU", yellow, dark_hover, int(coeff_font*55), 5, radius = 8, padding_x = 88)
 #level buttons
-easy_d = Button(mid, 13*SCREEN_HEIGHT/32, "BEGINNER", yellow, dark_hover, 55, 5, radius = 8, padding_x = 105)
-medium_d = Button(mid, 19*SCREEN_HEIGHT/32, "INTERMEDIATE", yellow, dark_hover, 55, 5, radius = 8)
-hard_d = Button(mid, 25*SCREEN_HEIGHT/32, "ADVANCED", yellow, dark_hover, 55, 5, radius = 8, padding_x = 100)
+easy_d = Button(mid, 13*SCREEN_HEIGHT/32, "BEGINNER", yellow, dark_hover, int(coeff_font*55), 5, radius = 8, padding_x = 105)
+medium_d = Button(mid, 19*SCREEN_HEIGHT/32, "INTERMEDIATE", yellow, dark_hover, int(coeff_font*55), 5, radius = 8)
+hard_d = Button(mid, 25*SCREEN_HEIGHT/32, "ADVANCED", yellow, dark_hover, int(coeff_font*55), 5, radius = 8, padding_x = 100)
 #end game
-replay_button_d = Button(mid, 13*SCREEN_HEIGHT/32, "REPLAY GAME", yellow, dark_hover, 55, 5, radius = 8, padding_x = 25)
-return_menu_button_d = Button(mid, 19*SCREEN_HEIGHT/32, "MAIN MENU", yellow, dark_hover, 55, 5, radius = 8, padding_x = 65)
-quit_button_d = Button(mid, 25*SCREEN_HEIGHT/32, "LEAVE GAME", yellow, dark_hover, 55, 5, radius = 8, padding_x = 65)
+replay_button_d = Button(mid, 13*SCREEN_HEIGHT/32, "REPLAY GAME", yellow, dark_hover, int(coeff_font*55), 5, radius = 8, padding_x = 25)
+return_menu_button_d = Button(mid, 19*SCREEN_HEIGHT/32, "MAIN MENU", yellow, dark_hover, int(coeff_font*55), 5, radius = 8, padding_x = 65)
+quit_button_d = Button(mid, 25*SCREEN_HEIGHT/32, "LEAVE GAME", yellow, dark_hover, int(coeff_font*55), 5, radius = 8, padding_x = 65)
 
-continue_button_d = Button(mid, 27*SCREEN_HEIGHT/32, "CONTINUE", yellow, dark_hover, 70, 8, radius = 8, padding_x = 40, padding_y = 40)
-next_button_d = Button(mid, 27*SCREEN_HEIGHT/32, "NEXT SWAP", yellow, dark_hover, 70, 8, radius = 8, padding_x = 40, padding_y = 40)
+continue_button_d = Button(mid, 27*SCREEN_HEIGHT/32, "CONTINUE", yellow, dark_hover, int(coeff_font*70), 8, radius = 8, padding_x = 40, padding_y = 40)
+next_button_d = Button(mid, 27*SCREEN_HEIGHT/32, "NEXT SWAP", yellow, dark_hover, int(coeff_font*70), 8, radius = 8, padding_x = 40, padding_y = 40)
 
 #create button instances - light theme
-solve_button_l = Button(mid, 15*SCREEN_HEIGHT/32, "SOLVE THE GRID", dark_blue, light_hover, 44, 4, radius = 8)
-best_button_l = Button(mid, 19*SCREEN_HEIGHT/32, "BEST SOLUTION", dark_blue, light_hover, 44, 4, radius = 8, padding_x = 25)
-theme_button_l = Button(mid, 23*SCREEN_HEIGHT/32, "CHANGE THEME", dark_blue, light_hover, 44, 4, radius = 8, padding_x = 28)
-leave_button_l = Button(mid, 27*SCREEN_HEIGHT/32, "LEAVE THE GAME", dark_blue, light_hover, 44, 4, radius = 8, padding_x = 18)
-home_button_l = Button(mid/8, SCREEN_HEIGHT/16, "HOME", dark_blue, light_hover, 44, 4, radius = 8, padding_x = 18)
-pause_button_l = Button(15*mid/8, SCREEN_HEIGHT/16, "PAUSE", dark_blue, light_hover, 44, 4, radius = 8, padding_x = 18)
+solve_button_l = Button(mid, 15*SCREEN_HEIGHT/32, "SOLVE THE GRID", dark_blue, light_hover, int(coeff_font*44), 4, radius = 8)
+best_button_l = Button(mid, 19*SCREEN_HEIGHT/32, "BEST SOLUTION", dark_blue, light_hover, int(coeff_font*44), 4, radius = 8, padding_x = 25)
+theme_button_l = Button(mid, 23*SCREEN_HEIGHT/32, "CHANGE THEME", dark_blue, light_hover, int(coeff_font*44), 4, radius = 8, padding_x = 28)
+leave_button_l = Button(mid, 27*SCREEN_HEIGHT/32, "LEAVE THE GAME", dark_blue, light_hover, int(coeff_font*44), 4, radius = 8, padding_x = 18)
+home_button_l = Button(mid/8, SCREEN_HEIGHT/16, "HOME", dark_blue, light_hover, int(coeff_font*44), 4, radius = 8, padding_x = 18)
+pause_button_l = Button(15*mid/8, SCREEN_HEIGHT/16, "PAUSE", dark_blue, light_hover, int(coeff_font*44), 4, radius = 8, padding_x = 18)
 #pause buttons
-resume_button_l = Button(mid, 10*SCREEN_HEIGHT/32, "RESUME GAME", dark_blue, light_hover, 55, 5, radius = 8)
-change_size_button_l = Button(mid, 16*SCREEN_HEIGHT/32, "CHANGE SIZE", dark_blue, light_hover, 55, 5, radius = 8, padding_x = 45)
-menu_button_l = Button(mid, 22*SCREEN_HEIGHT/32, "MAIN MENU", dark_blue, light_hover, 55, 5, radius = 8, padding_x = 88)
+resume_button_l = Button(mid, 10*SCREEN_HEIGHT/32, "RESUME GAME", dark_blue, light_hover, int(coeff_font*55), 5, radius = 8)
+change_size_button_l = Button(mid, 16*SCREEN_HEIGHT/32, "CHANGE SIZE", dark_blue, light_hover, int(coeff_font*55), 5, radius = 8, padding_x = 45)
+menu_button_l = Button(mid, 22*SCREEN_HEIGHT/32, "MAIN MENU", dark_blue, light_hover, int(coeff_font*55), 5, radius = 8, padding_x = 88)
 #level buttons
-easy_l = Button(mid, 13*SCREEN_HEIGHT/32, "BEGINNER", dark_blue, light_hover, 55, 5, radius = 8, padding_x = 100)
-medium_l = Button(mid, 19*SCREEN_HEIGHT/32, "INTERMEDIATE", dark_blue, light_hover, 55, 5, radius = 8)
-hard_l = Button(mid, 25*SCREEN_HEIGHT/32, "ADVANCED", dark_blue, light_hover, 55, 5, radius = 8, padding_x = 100)
+easy_l = Button(mid, 13*SCREEN_HEIGHT/32, "BEGINNER", dark_blue, light_hover, int(coeff_font*55), 5, radius = 8, padding_x = 100)
+medium_l = Button(mid, 19*SCREEN_HEIGHT/32, "INTERMEDIATE", dark_blue, light_hover, int(coeff_font*55), 5, radius = 8)
+hard_l = Button(mid, 25*SCREEN_HEIGHT/32, "ADVANCED", dark_blue, light_hover, int(coeff_font*55), 5, radius = 8, padding_x = 100)
 #end game
-replay_button_l = Button(mid, 13*SCREEN_HEIGHT/32, "REPLAY GAME", dark_blue, light_hover, 55, 5, radius = 8, padding_x = 25)
-return_menu_button_l = Button(mid, 19*SCREEN_HEIGHT/32, "MAIN MENU", dark_blue, light_hover, 55, 5, radius = 8, padding_x = 65)
-quit_button_l = Button(mid, 25*SCREEN_HEIGHT/32, "LEAVE GAME", dark_blue, light_hover, 55, 5, radius = 8, padding_x = 65)
+replay_button_l = Button(mid, 13*SCREEN_HEIGHT/32, "REPLAY GAME", dark_blue, light_hover, int(coeff_font*55), 5, radius = 8, padding_x = 25)
+return_menu_button_l = Button(mid, 19*SCREEN_HEIGHT/32, "MAIN MENU", dark_blue, light_hover, int(coeff_font*55), 5, radius = 8, padding_x = 65)
+quit_button_l = Button(mid, 25*SCREEN_HEIGHT/32, "LEAVE GAME", dark_blue, light_hover, int(coeff_font*55), 5, radius = 8, padding_x = 65)
 
-continue_button_l = Button(mid, 27*SCREEN_HEIGHT/32, "CONTINUE", dark_blue, light_hover, 70, 8, radius = 8, padding_x = 40, padding_y = 40)
-next_button_l = Button(mid, 27*SCREEN_HEIGHT/32, "NEXT SWAP", dark_blue, light_hover, 70, 8, radius = 8, padding_x = 40, padding_y = 40)
+continue_button_l = Button(mid, 27*SCREEN_HEIGHT/32, "CONTINUE", dark_blue, light_hover, int(coeff_font*70), 8, radius = 8, padding_x = 40, padding_y = 40)
+next_button_l = Button(mid, 27*SCREEN_HEIGHT/32, "NEXT SWAP", dark_blue, light_hover, int(coeff_font*70), 8, radius = 8, padding_x = 40, padding_y = 40)
 
 
 def draw_text(text, font, text_col, x, y):
@@ -170,14 +172,16 @@ def generate_grid(lin, col, level):
                     else:
                         k += 1
 
-    
     return Grid(lin, col, grid)
 
 
 #game loop
 run = True
+index = 0
 time.sleep(0.2)
 while run:
+    index += 1
+    print(0, screen.get_rect().width)
     #change variables depending on the theme
     if theme == "dark" :
         solve_button = solve_button_d
@@ -313,9 +317,9 @@ while run:
         pygame.draw.rect(screen,col_lin,rectangle_lines,10)
 
         col_surface = font_select.render(str(columns),True,col_col)
-        screen.blit(col_surface, (rectangle_columns.topleft[0]+18, rectangle_columns.topleft[1]-18))
+        screen.blit(col_surface, (rectangle_columns.topleft[0]+18*coeff_font, rectangle_columns.topleft[1]-18*coeff_font))
         lin_surface = font_select.render(str(lines),True,col_lin)
-        screen.blit(lin_surface, (rectangle_lines.topleft[0]+18, rectangle_lines.topleft[1]-18))
+        screen.blit(lin_surface, (rectangle_lines.topleft[0]+18*coeff_font, rectangle_lines.topleft[1]-18*coeff_font))
 
         if continue_button.draw(screen) and str(columns).isdigit() and str(lines).isdigit():
             if (game == "level" or int(columns)*int(lines) <= 10) and (int(columns) > 0 and int(lines) > 0):  #if the grid is too big and we are in "best solve", A* star won't work
@@ -429,7 +433,7 @@ while run:
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     time.sleep(0.2)
                     x, y = event.pos
-                    j, i = int((x/G.displayx*(G.n+4))//1 - 2), int((y/G.displayy*(G.m+4))//1 - 2) 
+                    j, i = int((x/SCREEN_WIDTH*(G.n+4))//1 - 2), int((y/SCREEN_HEIGHT*(G.m+4))//1 - 2) 
                     if 0 <= i <= G.m-1 and 0 <= j <= G.n-1:
                         if len(active) == 0 or (len(active) == 1 and ((abs(i-active[0][0]) == 1 and abs(j-active[0][1]) == 0) or (abs(i-active[0][0]) == 0 and abs(j-active[0][1]) == 1))):
                             active.append((i,j))
@@ -437,32 +441,32 @@ while run:
                             active = [(i,j)]
         except:
             pass
-
+        
         for i in range(G.m):
             for j in range(G.n):
                 #if case is selected we change its color
                 if (i,j) in active:
                     pygame.draw.rect(surface=screen, color=hover,
-                                rect=pygame.Rect(G.displayx * (j + 2) / (G.n + 4),
-                                                G.displayy * (i + 2) / (G.m + 4),
-                                                G.displayx / (G.n + 4) + G.coeff,
-                                                G.displayy / (G.m + 4) + G.coeff),
+                                rect=pygame.Rect(SCREEN_WIDTH * (j + 2) / (G.n + 4),
+                                                SCREEN_HEIGHT * (i + 2) / (G.m + 4),
+                                                SCREEN_WIDTH / (G.n + 4) + G.coeff,
+                                                SCREEN_HEIGHT / (G.m + 4) + G.coeff),
                                 width=0)
                 
                 #then, we draw the cells
                 pygame.draw.rect(surface=screen, color=txt,
-                                rect=pygame.Rect(G.displayx * (j + 2) / (G.n + 4),
-                                                G.displayy * (i + 2) / (G.m + 4),
-                                                G.displayx / (G.n + 4) + G.coeff,
-                                                G.displayy / (G.m + 4) + G.coeff),
+                                rect=pygame.Rect(SCREEN_WIDTH * (j + 2) / (G.n + 4),
+                                                SCREEN_HEIGHT * (i + 2) / (G.m + 4),
+                                                SCREEN_WIDTH / (G.n + 4) + G.coeff,
+                                                SCREEN_HEIGHT / (G.m + 4) + G.coeff),
                                 width=int(G.coeff))
                 font = pygame.font.SysFont('verdana bold', int(400 / max(G.m, G.n)))
                 text = font.render(str(G.state[i][j]), True, txt)
-                G.screen.blit(text, (G.displayx * (j + 5 / 2) / (G.n + 4) - text.get_rect().width / 2 +
+                screen.blit(text, (SCREEN_WIDTH * (j + 5 / 2) / (G.n + 4) - text.get_rect().width / 2 +
                                     G.coeff / 2,
-                                    G.displayy * (i + 5 / 2) / (G.m + 4) - text.get_rect().height / 2 +
+                                    SCREEN_HEIGHT * (i + 5 / 2) / (G.m + 4) - text.get_rect().height / 2 +
                                     G.coeff / 2))
-        
+
         #swap if 2 cells selected
         if len(active) == 2:
             pygame.display.update()
@@ -478,7 +482,6 @@ while run:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
-
         if resume_button.draw(screen):
             program_state = game
         if change_size_button.draw(screen):
@@ -544,7 +547,7 @@ while run:
                                     width=int(G.coeff))
                     font = pygame.font.SysFont('verdana bold', int(400 / max(G.m, G.n)))
                     text = font.render(str(G.state[i][j]), True, txt)
-                    G.screen.blit(text, (SCREEN_WIDTH * (j + 5 / 2) / (G.n + 4) - text.get_rect().width / 2 +
+                    screen.blit(text, (SCREEN_WIDTH * (j + 5 / 2) / (G.n + 4) - text.get_rect().width / 2 +
                                         G.coeff / 2,
                                         SCREEN_HEIGHT * (i + 5 / 2) / (G.m + 4) - text.get_rect().height / 2 +
                                         G.coeff / 2))
