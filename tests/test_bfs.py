@@ -14,7 +14,7 @@ class Test_BFS(unittest.TestCase):
 
         G = Graph.graph_from_file("input/graph2.in")
         # Open the file in read mode
-        with open("/home/onyxia/work/ensae-prog24/input/graph2.path.out", "r") as file:
+        with open("input/graph2.path.out", "r") as file:
             tuple_list = []  # list of the src and dst in graph2.path.out (index i = line i)
             path_list = []  # list of paths in the file graph2.path.out (index i = line i)
 
