@@ -47,10 +47,6 @@ class Grid():
             initial_state = [list(range(i*n+1, (i+1)*n+1)) for i in range(m)]            
         self.state = initial_state
 
-        pygame.init()
-        self.screen = pygame.display.set_mode((self.displayx, self.displayy))
-        pygame.display.set_caption("GRID REPRESENTATION")
-
         self.g_score = 100000
         self.parent = None
     
@@ -147,10 +143,14 @@ class Grid():
         return grid
 
 
-    def grid_representation(self, col_bg, col_txt):
+    def grid_representation(self, col_bg = "#101820", col_txt = "#FEE715"):
         """
         Creates a grid representation with pygame : we suggest you to run it on vscode
         """
+        pygame.init()
+        self.screen = pygame.display.set_mode((self.displayx, self.displayy))
+        pygame.display.set_caption("GRID REPRESENTATION")
+
         running = True
         while running:
             for event in pygame.event.get():
