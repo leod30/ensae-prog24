@@ -5,14 +5,10 @@ sys.path.append("swap_puzzle/")
 from graph import Graph
 
 
-class Test_BFS(unittest.TestCase):
-    def test_bfs_grid_file_2(self):
-        """this function gets the graph in graph.in and tests if the astar function works
-        with the graph.path.out, by testing astar(src,dst) (with src and dst the first 2
-        numbers of each line in graph1.in) and then compares it to the list at the end
-        of the line"""
+class Test_ASTAR(unittest.TestCase):
+    def test_astar(self):
 
-        G = Graph.graph_from_file("input/graph2.in")
+        G = Graph.graph_from_file()
         # Open the file in read mode
         with open("input/graph2.path.out", "r") as file:
             tuple_list = []  # list of the src and dst in graph2.path.out (index i = line i)
