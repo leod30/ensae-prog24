@@ -3,44 +3,23 @@ import unittest
 import sys
 sys.path.append("swap_puzzle/")
 from graph import Graph
+from grid import Grid
+from solver import Solver
+import heuristics
+
+
+solver = Solver()
 
 
 class Test_ASTAR(unittest.TestCase):
     def test_astar(self):
 
-        G = Graph.graph_from_file()
-        # Open the file in read mode
-        with open("input/graph2.path.out", "r") as file:
-            tuple_list = []  # list of the src and dst in graph2.path.out (index i = line i)
-            path_list = []  # list of paths in the file graph2.path.out (index i = line i)
+        G = Grid(3, 3, [[5, 3, 6], [2, 1, 4], [8, 7, 9]])
+        
+        path_astar = solver.a_star(G, heuristics.hash)
 
-            # Read each line of the file : very specific (and not really understandable)
-            for line in file:
-                elements = line.split(" ")  # splits the elements in each line separated by a space
-                if elements[-1] == "None\n":
-                    elements[-1] = "None"
-                else:
-                    last_number = (elements.pop())[:-2]  # removes the "\n" at the end of each line
-                    elements.append(last_number)
-                    elements.append("]")  # puts back the "]"
-                    elements.pop(2)  # case where there is 3 numbers and 1 list
-
-                # Convert the first two numbers of the file as integers
-                num1 = eval(elements.pop(0))
-                num2 = eval(elements.pop(0))
-
-                list = "".join(elements)
-                path = eval(list)  # python understands its a list, or a None object
-                tuple_nums = (num1, num2)
-
-                tuple_list.append(tuple_nums)
-                path_list.append(path)
-
-        for i in range(len(path_list)):
-            path_astar = G.a_star(tuple_list[i][0], tuple_list[i][-1])
-            self.assertEqual(path_astar, path_list[i])
-
-        return path_astar
+        self.assertEqual(path_astar, [((0, 0), (1, 0)), ((0, 1), (1, 1)), ((0, 0), (0, 1)), ((0, 2), (1, 2)), ((1, 1), (1, 2)), ((0, 2), (1, 2)), ((1, 1), (1, 2)), ((1, 0), (1, 1)), ((2, 0), (2, 1))])
+        # We compare it to the path found with the bfs
 
 
 if __name__ == '__main__':
