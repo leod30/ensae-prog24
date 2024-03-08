@@ -69,6 +69,9 @@ font_select = pygame.font.SysFont("arialblack", int(90*coeff_font))
 if path[-4:] == "main":
     swap_puzzle_img = pygame.image.load('swap_puzzle/swap_puzzle.png').convert_alpha()
     swap_puzzle_scaled = pygame.transform.scale(swap_puzzle_img, (coeff_font*180, coeff_font*180))
+elif path[-6:] == "prog24":
+    swap_puzzle_img = pygame.image.load('swap_puzzle/swap_puzzle.png').convert_alpha()
+    swap_puzzle_scaled = pygame.transform.scale(swap_puzzle_img, (coeff_font*180, coeff_font*180))
 else:
     swap_puzzle_img = pygame.image.load('swap_puzzle.png').convert_alpha()
     swap_puzzle_scaled = pygame.transform.scale(swap_puzzle_img, (coeff_font*180, coeff_font*180))
@@ -162,7 +165,7 @@ def generate_grid(lin, col, level):
             else:
                 k, l = 0, 0
                 while True:
-                    if None in grid[k]:
+                    if None in grid[k]:  # We check if a cell is empty (None in the cell) in the line k, if not we go to the next line
                         if grid[k][l] is None:
                             grid[k][l] = actual_coeff
                             break
@@ -181,7 +184,6 @@ index = 0
 time.sleep(0.2)
 while run:
     index += 1
-    print(0, screen.get_rect().width)
     #change variables depending on the theme
     if theme == "dark" :
         solve_button = solve_button_d
@@ -231,7 +233,7 @@ while run:
         hover = light_hover
         end = "dark green"
 
-    screen.fill(bg)
+    screen.fill(bg)  #This puts the color of the background
 
     #launch screen
     if program_state == "launch":
