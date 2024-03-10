@@ -1,10 +1,6 @@
 import os
 os.environ['SDL_AUDIODRIVER'] = 'dsp'
 
-# If you run on Onyxia, we suggest you to go to Grid --> comment lines 48 and 49
-# Because there is no environment to display tkinter windows on onyxia
-# But it works on all the other compilers
-
 from grid import Grid
 from solver import Solver
 from graph import Graph
